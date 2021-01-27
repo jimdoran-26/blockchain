@@ -1,7 +1,7 @@
 #!/user/bin/python
 #-*- coding: utf-8
-
 from hashlib import sha3_256
+DIFFICULTY=4
 
 def updateHash(*args):
     hashing_text=""; h= sha3_256()
@@ -10,9 +10,6 @@ def updateHash(*args):
 
     h.update(hashing_text.encode('utf-8'))
     return h.hexdigest()
-
-
-
 
 class Block():
     data=None
@@ -37,7 +34,7 @@ class Block():
 
 
 class Blockchain():
-    difficulty=4
+    difficulty = DIFFICULTY
 
     def __init__(self,chain=[]):
         self.chain = chain
@@ -51,16 +48,31 @@ class Blockchain():
             'nonce':block.nonce
         })
 
+    def mine(self,block):
+        try:
+            block.previous_hash=self.chain[-1].get('hash')
+        except IndexError:
+            pass
 
-
-
-
-
-
+        while True:
+            if block.hash()[:self.difficulty] == "0" * self.difficulty:
+                self.add(block);break
+            else:
+                block.nonce+=1
 
 def main():
-    block=Block('hello world',1)
-    print(block)
+    #block=Block('hello world',1)
+    #print(block)
+    blockchain = Blockchain()
+    database = ['hello world','what is up', 'hello','goodbye']
+
+    num=0
+    for data in database:
+        num+=1
+        blockchain.mine(Block(data,num))
+
+    for block in blockchain.chain:
+        print(block)
 
 if __name__=='__main__':
     main()
