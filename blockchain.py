@@ -74,5 +74,6 @@ def main():
     for block in blockchain.chain:
         print(block)
 
+
 if __name__=='__main__':
     main()
